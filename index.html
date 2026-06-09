@@ -1887,7 +1887,7 @@
         let title = "";
 
         if (criteria === "All") {
-          filtered = db;
+          filtered = (window.perfumeDB || []).filter(p => parseInt(p.stock) > 0);
           title = "All Products";
         } else if (criteria === "BestSellers") {
           filtered = db
