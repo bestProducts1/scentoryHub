@@ -285,6 +285,52 @@
         font-size: 1rem;
       }
 
+      /* ================= CUSTOMER INFO FORM ================= */
+      .shipping-form-box {
+        background: #fff;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+      .shipping-form-box h3 {
+        font-size: 1.1rem;
+        margin-top: 0;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      .form-notice {
+        font-size: 0.8rem;
+        color: #777;
+        margin-bottom: 15px;
+        line-height: 1.4;
+      }
+      .form-group {
+        margin-bottom: 12px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #444;
+      }
+      .form-input {
+        width: 100%;
+        height: 38px;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .form-input:focus {
+        border-color: var(--accent-color);
+      }
+
       /* ================= SUMMARY & FOOTER ================= */
       .cart-summary {
         background: #fff;
@@ -322,6 +368,29 @@
       }
       .discount-text {
         color: #28a745;
+      }
+
+      /* Earphone Redirect Section */
+      .earphone-redirect-box {
+        margin-top: 20px;
+        background: #fff;
+        padding: 15px;
+        border: 1px dashed var(--accent-color);
+        border-radius: 6px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+      .earphone-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--accent-color);
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+      .earphone-link:hover {
+        text-decoration: underline;
       }
 
       /* Fixed Bottom Actions */
@@ -451,6 +520,31 @@
     <div id="capture-area">
       <ul id="cart-items-list" class="cart-items-list"></ul>
 
+      <!-- Optional Shipping Info Form -->
+      <div id="shipping-info-form" class="shipping-form-box" style="display: none;">
+        <h3>Shipping Information (Optional / 选填)</h3>
+        <p class="form-notice">
+          💡 Leaving your details here helps us generate your tracking label faster. It is completely optional! <br>
+          (温馨提示：留下信息可以让我们更快为您安排发货，不填也支持直接提交订单。)
+        </p>
+        <div class="form-group">
+          <label for="user-name">Full Name / 姓名</label>
+          <input type="text" id="user-name" class="form-input" placeholder="e.g. John Doe (Optional)">
+        </div>
+        <div class="form-group">
+          <label for="user-phone">Phone Number / 手机号</label>
+          <input type="tel" id="user-phone" class="form-input" placeholder="e.g. +1 123 456 7890 (Optional)">
+        </div>
+        <div class="form-group">
+          <label for="user-address">Shipping Address / 详细地址</label>
+          <input type="text" id="user-address" class="form-input" placeholder="e.g. Street, City, State, ZIP (Optional)">
+        </div>
+        <div class="form-group">
+          <label for="user-email">Email Address / 电子邮箱</label>
+          <input type="email" id="user-email" class="form-input" placeholder="e.g. john@example.com (Optional)">
+        </div>
+      </div>
+
       <div id="cart-summary" class="cart-summary" style="display: none">
         <h2>Order Summary</h2>
         <div class="summary-row">
@@ -490,6 +584,13 @@
             border-radius: 4px;
           "
         ></div>
+      </div>
+
+      <!-- Earphone Redirect Placeholder Box -->
+      <div id="earphone-box" class="earphone-redirect-box" style="display: none;">
+        <a href="https://your-earphone-store-link.com" target="_blank" class="earphone-link">
+          🎧 Looking for Premium Earphones? Click Here to Shop! (寻找高品质耳机？点击前往专卖店) ▶
+        </a>
       </div>
 
       <div id="discount-tiers" class="tiers-container" style="display: none">
@@ -536,14 +637,12 @@
 
       // ================= Back Button Logic =================
       function handleBack() {
-        // 如果有历史记录且来自同一站点，则回退保留位置
         if (
           document.referrer &&
           document.referrer.includes(window.location.host)
         ) {
           history.back();
         } else {
-          // 否则默认跳回首页
           window.location.href = "index.html";
         }
       }
@@ -552,6 +651,8 @@
       const cartItemsList = document.getElementById("cart-items-list");
       const clearCartBtn = document.getElementById("clear-cart-btn");
       const sendOrderBtn = document.getElementById("send-order-btn");
+      const shippingFormBox = document.getElementById("shipping-info-form");
+      const earphoneBox = document.getElementById("earphone-box");
 
       const summaryEls = {
         total: document.getElementById("total-price"),
@@ -601,11 +702,15 @@
           `;
           summaryEls.container.style.display = "none";
           summaryEls.tiersContainer.style.display = "none";
+          shippingFormBox.style.display = "none";
+          earphoneBox.style.display = "none";
           return;
         }
 
         summaryEls.container.style.display = "block";
         summaryEls.tiersContainer.style.display = "block";
+        shippingFormBox.style.display = "block";
+        earphoneBox.style.display = "block";
 
         cart.forEach((item, index) => {
           const price = Number(item.price) || 0;
@@ -662,14 +767,12 @@
           else other += qty;
         });
 
-        // Discount Logic
         const tier = tiers.find(
           (t) => totalQty >= t.min && totalQty <= t.max,
         ) || { percent: 0 };
         const discountVal = subtotal * tier.percent;
         const finalTotal = subtotal - discountVal;
 
-        // Render Summary
         summaryEls.lv.textContent = lv;
         summaryEls.other.textContent = other;
         summaryEls.subtotal.textContent = `$${subtotal.toFixed(2)}`;
@@ -678,7 +781,6 @@
         ).toFixed(0)}%)`;
         summaryEls.total.textContent = `$${Math.round(finalTotal).toFixed(2)}`;
 
-        // Upsell Logic
         const nextTier = tiers.find((t) => t.min > totalQty);
         if (nextTier && totalQty >= 5) {
           const needed = nextTier.min - totalQty;
@@ -694,7 +796,6 @@
           summaryEls.upsell.style.display = "none";
         }
 
-        // Render Tiers Badges
         summaryEls.tiersList.innerHTML = tiers
           .map((t) => {
             const active =
@@ -708,7 +809,6 @@
           .join("");
       }
 
-      // Actions
       window.updateQty = (index, change) => {
         const cart = loadCart();
         if (cart[index]) {
@@ -737,7 +837,7 @@
         }
       };
 
-      // ================= FIXED SEND ORDER LOGIC =================
+      // ================= CUSTOMER INFO EMBEDDED IN ORDER LOGIC =================
       sendOrderBtn.onclick = () => {
         const cart = loadCart();
         if (cart.length === 0) return alert("Cart is empty");
@@ -756,12 +856,26 @@
           }
         });
 
-        // 1. 使用 \n 来代替 %0A，让 JS 字符串自然换行
+        // 提取选填表单数据
+        const uName = document.getElementById("user-name").value.trim();
+        const uPhone = document.getElementById("user-phone").value.trim();
+        const uAddress = document.getElementById("user-address").value.trim();
+        const uEmail = document.getElementById("user-email").value.trim();
+
         let msg = `*New Order Request* 📦\n`;
         msg += `----------------------------\n`;
+        
+        // 只有当客户填写了对应信息时，才附加到消息头中
+        if(uName)    msg += `👤 *Name:* ${uName}\n`;
+        if(uPhone)   msg += `📞 *Phone:* ${uPhone}\n`;
+        if(uAddress) msg += `📍 *Address:* ${uAddress}\n`;
+        if(uEmail)   msg += `✉️ *Email:* ${uEmail}\n`;
+        if(uName || uPhone || uAddress || uEmail) {
+          msg += `----------------------------\n\n`;
+        }
 
+        msg += `*Products List:*\n`;
         cart.forEach((item) => {
-          // 这里不需要手动处理 &，因为最后会统一 encode
           msg += `${item.caption} x *${item.quantity}*\n\n`;
         });
 
@@ -773,8 +887,6 @@
         msg += `----------------------------\n`;
         msg += `*Total Amount:* ${summaryEls.total.textContent}`;
 
-        // 2. 关键步骤：使用 encodeURIComponent 对整个消息进行编码
-        // 这样 & 会被转换为 %26，换行符 \n 会被转换为 %0A，避免链接截断
         const encodedMsg = encodeURIComponent(msg);
 
         window.open(
@@ -783,7 +895,6 @@
         );
       };
 
-      // Init
       document.addEventListener("DOMContentLoaded", renderCart);
     </script>
   </body>
