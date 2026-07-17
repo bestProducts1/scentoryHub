@@ -419,7 +419,7 @@
       .btn-clear {
         background: #f0f0f0;
         color: #333;
-        flex: 0.6; /* Clear 按钮稍小一点 */
+        flex: 0.6;
       }
       .btn-order {
         background: #25d366; /* WhatsApp Green */
@@ -427,7 +427,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px; /* Added gap for icon spacing */
+        gap: 8px;
       }
 
       /* Discount Tiers */
@@ -520,27 +520,27 @@
     <div id="capture-area">
       <ul id="cart-items-list" class="cart-items-list"></ul>
 
-      <!-- Optional Shipping Info Form -->
+      <!-- Optional Shipping Info Form (English / Español) -->
       <div id="shipping-info-form" class="shipping-form-box" style="display: none;">
-        <h3>Shipping Information (Optional / 选填)</h3>
+        <h3>Shipping Information (Optional / Opcional)</h3>
         <p class="form-notice">
           💡 Leaving your details here helps us generate your tracking label faster. It is completely optional! <br>
-          (温馨提示：留下信息可以让我们更快为您安排发货，不填也支持直接提交订单。)
+          (Nota: Dejar sus datos nos ayuda a generar la etiqueta de envío más rápido. ¡Es totalmente opcional! También puede enviar su pedido directamente sin rellenar este formulario.)
         </p>
         <div class="form-group">
-          <label for="user-name">Full Name / 姓名</label>
+          <label for="user-name">Full Name / Nombre Completo</label>
           <input type="text" id="user-name" class="form-input" placeholder="e.g. John Doe (Optional)">
         </div>
         <div class="form-group">
-          <label for="user-phone">Phone Number / 手机号</label>
+          <label for="user-phone">Phone Number / Teléfono</label>
           <input type="tel" id="user-phone" class="form-input" placeholder="e.g. +1 123 456 7890 (Optional)">
         </div>
         <div class="form-group">
-          <label for="user-address">Shipping Address / 详细地址</label>
+          <label for="user-address">Shipping Address / Dirección de Envío</label>
           <input type="text" id="user-address" class="form-input" placeholder="e.g. Street, City, State, ZIP (Optional)">
         </div>
         <div class="form-group">
-          <label for="user-email">Email Address / 电子邮箱</label>
+          <label for="user-email">Email Address / Correo Electrónico</label>
           <input type="email" id="user-email" class="form-input" placeholder="e.g. john@example.com (Optional)">
         </div>
       </div>
@@ -586,10 +586,10 @@
         ></div>
       </div>
 
-      <!-- Earphone Redirect Placeholder Box -->
+      <!-- Earphone Redirect Placeholder Box (English / Español) -->
       <div id="earphone-box" class="earphone-redirect-box" style="display: none;">
         <a href="https://your-earphone-store-link.com" target="_blank" class="earphone-link">
-          🎧 Looking for Premium Earphones? Click Here to Shop! (寻找高品质耳机？点击前往专卖店) ▶
+          🎧 Looking for Premium Earphones? Click Here to Shop! (¿Busca auriculares premium? ¡Haga clic aquí para comprar!) ▶
         </a>
       </div>
 
@@ -837,7 +837,7 @@
         }
       };
 
-      // ================= CUSTOMER INFO EMBEDDED IN ORDER LOGIC =================
+      // ================= CHECKOUT WITH SHIPPING DATA =================
       sendOrderBtn.onclick = () => {
         const cart = loadCart();
         if (cart.length === 0) return alert("Cart is empty");
@@ -856,7 +856,7 @@
           }
         });
 
-        // 提取选填表单数据
+        // 获取表单值
         const uName = document.getElementById("user-name").value.trim();
         const uPhone = document.getElementById("user-phone").value.trim();
         const uAddress = document.getElementById("user-address").value.trim();
@@ -865,7 +865,7 @@
         let msg = `*New Order Request* 📦\n`;
         msg += `----------------------------\n`;
         
-        // 只有当客户填写了对应信息时，才附加到消息头中
+        // 动态附加客户信息到 WhatsApp 文本头部
         if(uName)    msg += `👤 *Name:* ${uName}\n`;
         if(uPhone)   msg += `📞 *Phone:* ${uPhone}\n`;
         if(uAddress) msg += `📍 *Address:* ${uAddress}\n`;
