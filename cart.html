@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Your Cart</title>
@@ -862,14 +863,14 @@
         const uAddress = document.getElementById("user-address").value.trim();
         const uEmail = document.getElementById("user-email").value.trim();
 
-        let msg = `*New Order Request* 📦\n`;
+      let msg = `*New Order Request* \u{1F4E6}\n`;
         msg += `----------------------------\n`;
         
         // 动态附加客户信息到 WhatsApp 文本头部
-        if(uName)    msg += `👤 *Name:* ${uName}\n`;
-        if(uPhone)   msg += `📞 *Phone:* ${uPhone}\n`;
-        if(uAddress) msg += `📍 *Address:* ${uAddress}\n`;
-        if(uEmail)   msg += `✉️ *Email:* ${uEmail}\n`;
+        if(uName)    msg += `\u{1F464} *Name:* ${uName}\n`;
+        if(uPhone)   msg += `\u{1F4DE} *Phone:* ${uPhone}\n`;
+        if(uAddress) msg += `\u{1F4CD} *Address:* ${uAddress}\n`;
+        if(uEmail)   msg += `\u{2709}\u{FE0F} *Email:* ${uEmail}\n`;
         if(uName || uPhone || uAddress || uEmail) {
           msg += `----------------------------\n\n`;
         }
